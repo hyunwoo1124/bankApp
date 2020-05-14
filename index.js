@@ -12,8 +12,7 @@ const bodyParser = require("body-parser");
 // Instantiate an express app
 const app = express();
 
-// Set the view engine
-app.set('view engine', 'ejs');
+
 
 
 
