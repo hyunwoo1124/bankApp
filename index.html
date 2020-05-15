@@ -1,82 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bank App</title>
-</head>
+<html>
+<title> Welcome to Bank App Trust Corp. </title>
 <body>
-  
 
-  <div>
-    <div class="tab-content">
-      <h1> Sign up for our Secured Banking App</h1>
+<h1> 
+  Bank App Trust Corp. Your most secured bank app
+</h1> 
+<div>
+<h2> If you have an account, please login here: </h1>
+<form action="/login" method="POST">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username">
 
-      <form action="/" method="POST">
+    <label for="pass">Password (8 characters minimum):</label>
+    <input type="password" id="pass" name="password"
+           minlength="8" required>
 
-        <!-- first name-->
-        <div>
-          <label>
-            First Name <span></span>
-          </label>
-          <input type="text"/>
-        </div>
+	<input type="submit" value="Sign in">
+</form>
+</div>	
+	
+<div>
+<h2> No account? Create one here! </h1>
+<form action="/create" method="POST">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username">
 
-        <!-- last name-->
-        <div>
-          <label>
-            Last Name<span></span>
-          </label>
-          <input type="text" />
-        </div>
-        
-        <!-- Email address-->
-        <div>
-          <label>
-            Email Address<span<></span>
-          </label>
-          <input type ="email"/>
-        </div>
-        
-        <!--password-->
-        <div>
-          <label>
-            Password<span></span>
-          </label>
-          <input type="password"/>
-        </div>
+    <label for="pass">Password (8 characters minimum):</label>
+    <input type="password" id="pass" name="password"
+           minlength="8" required>
 
-        <button type="submit">Compete Application</button>
-        </div>
-      </form>
-    </div>
-
-
-    <div<>
-      <h1>Login to your account</h1>
-      <form action="/" method="post">
-          
-        <div>
-        <label>
-          Email Address<span></span>
-        </label>
-        <input type="email"/>
-      </div>
-      
-      <div>
-        <label>
-          Password<span></span>
-        </label>
-        <input type="password"/>
-      </div>
-      
-      <p class="forgot"><a href="#">Forgot Password?</a></p>
-      
-      <button class="button button-block"/>Log In</button>
-      
-      </form>
-
-    </div>
-  </div>
+	<input type="submit" value="Create">
+</form>
+</div>	
+<hr>
+	
 </body>
 </html>
