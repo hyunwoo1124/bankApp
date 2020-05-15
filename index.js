@@ -16,6 +16,7 @@ const app = express();
 
 
 
+
 // Needed to parse the request body
 // Note that in version 4 of express, express.bodyParser() was
 // deprecated in favor of a separate 'body-parser' module.
@@ -51,10 +52,44 @@ app.get("/", function(req, res){
 // @param res - the response
 app.get('/dashboard', function(req, res){
 
+    let id = req.body.id
+   if(id === "Deposit")
+   {
+       res.redirect('/Deposit')
+   }
+    if(id === "Withdraw")
+    {
+        res.redirect('/withdraw')
+    }
+    if(id === "Transfer")
+    {
+        res.redirect('/transfer')
+    }
+    if(id === "viewAccounts")
+    {
+        res.redirect('/viewAccounts')
+    }
+    if(id === "Logout")
+    {
+        res.redirect('/logout')
+    }
+
+
 
 
 });
+app.get('/Deposit', function (req,res) {
 
+});
+app.get('/withdraw', function (req,res) {
+
+});
+app.get('/transfer', function (req,res) {
+
+});
+app.get('/viewAccounts', function (req,res) {
+
+});
 // The login script
 // @param req - the request
 // @param res - the response
