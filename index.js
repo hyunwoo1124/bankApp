@@ -34,12 +34,15 @@ app.get("/", function(req,res){
 //when the user dont have an account and need to create one
 app.post("/create", function(req, res){
     console.log(req.body);
-
     fs.appendFile("db.txt", req.body.username + ";" + req.body.password + "\n", function(err){
-        res.send("Thank you for registerin!");
     });
-
+    
+    fs.appendFile("info.txt", req.body.lname + ";" + req.body.fname + ";" + req.body.address + "\n", function(err){
+        res.send("Thank you for registering!");
+    });
+    
     parseDB('db.txt');
+    parseDB('info.txt');
 });
 
 
@@ -61,20 +64,50 @@ app.post("/login", function(req, res){
             let userName = tokenizedData[i].split(";")[0];
             let password = tokenizedData[i].split(";")[1];
 
-            if(req.body.userName== userName && req.body.password == password){
-                credMatch =true;
+            if((req.body.username == userName) && (req.body.password == password)){
+                credMatch = true;
+
             }
 
-            console.log(tokenizedData[i]);
 
         }
+       
         if(credMatch == false){
-            
-            res.sendFile(__dirname + '/login.html');
+            console.log("Sorry didnt work");
+            res.sendFile(__dirname + '/wrong.html');
+
         }
+
+
+        res.sendFile(__dirname+ '/dashboard.html');  
+
     })
 });
 
+
+
+app.post("/balance", function(req, res){
+    
+});
+
+
+
+
+app.post("/deposit", function(req,res){
+    console.log("Got data: " + req.body.deposit)
+   // console.log("Deposit amount: " + req.body.depositAmount)
+
+    
+    res.sendFile(__dirname + '/deposit.html');
+});
+
+app.post("/depositMath", function(req, res){
+
+    console.log("Deposit amount: " + req.body.depositAmount);
+    let depositAmount = req.body.depositAmount;
+    
+    res.sendFile(__dirname + '/dashboard.html');
+});
 app.listen(3000);
 
 //yeah lets keep going for now
