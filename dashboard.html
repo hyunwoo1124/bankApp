@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to your dashboard</title>
+</head>
+<body>
+    <h1>Welcome to your dashboard</h1>
+    <br><br>
+    <!--May have to use form action later on-->
+    <!--
+        view account balances
+        deposit to or from
+        withdraw to or from
+        transfer to or from
+        log out
+    
+    <button name = "balance" type ="submit">View Balance</button>
+    <button name = "deposit" type ="submit">Deposit</button>
+    <button name = "withdraw" type = "submit">Withdraw</button>
+    <button name = "transfer" type ="submit">transfer</button>
+    -->
+
+
+    <form action="/balance" method="POST">
+        <input type="submit" name = "balance" value="Balance" />
+    </form>
+
+    <form action="/deposit" method="POST">
+        <input type="submit" name = "deposit" value="Deposit" />
+    </form>
+
+    <form action="/withdraw" method="POST">
+        <input type="submit" name = "withdraw" value="Withdraw" />
+    </form>
+
+    <form action="/transfer" method="POST">
+        <input type="submit" name = "transfer" value="Transfer" />
+    </form>
+    
+    <form action ="/logout">
+        <input type="submit" name ="logout" value="logout"/>
+    </form>
+    <br>
+
+    <h1>Your balance</h1>
+
+    <br>
+    
+
+</body>
+</html>
