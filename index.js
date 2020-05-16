@@ -85,19 +85,53 @@ app.post('/create', function(req, res){
     let username = req.body.username;
     let password = req.body.password;
     let address = req.body.address;
+    let  accountBalance = 0;
 
-    let query = "USE users; INSERT INTO appusers VALUES('" + firstname + "','" + lastname + "','" + username + "','" + password + "','" + address + "');";
+    let query = "USE users; INSERT INTO appusers VALUES('" + firstname + "','" + lastname + "','" + username + "','" + password + "','" + address + "','" + accountBalance + "');";
     console.log(query);
 
     mysqlConn.query(query, function(err, qResult){
         if(err) throw err;
     })
-    res.sendFile(__dirname + '/login')
-});
+    res.sendFile(__dirname + '/index.html')
+});    
+
 
 app.get('/logout', function(req,res){
     req.session.reset();
     res.redirect('/');
+});
+
+
+app.post('/balance', function(req,res){
+    //let username = req.body.username;
+    //let password = req.body.password;
+    //let  accountBalance = 0;
+
+    //let query = "USE users; SELECT username, password, accountBalance from appusers where username='" + username + "' AND password='" + password + "' AND accountBalance='" + accountBalance +"');";
+    console.log(req.session.username);
+
+    let username = req.session.username;
+
+    console.log(username);
+    let query = "USE users;SELECT accountBalance FROM appusers WHERE username= '" + username +"';";
+    console.log("pay attention here");
+
+    let accountBalance = req.session.accountBalance;
+
+    console.log(accountBalance);
+
+    console.log(query);
+    console.log(username);
+    console.log(accountBalance);
+  
+    mysqlConn.query(query, function(err, qResult){
+        if(err) throw err;
+    })
+    
+    console.log(accountBalance);
+
+
 });
 
 app.listen(3000);
