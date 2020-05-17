@@ -189,7 +189,9 @@ app.post('/withdraw', function(req,res){
     let username = req.session.username;
     console.log(username);
     let amountSub = req.body.withdraw;
-    if (amountSub < 0){
+    let accountBalance = req.session.accountBalance
+    if (amountSub < 0 || amountSub > accountBalance ){
+        console.log("either put 0 or more than in account");
         res.sendFile(__dirname + '/withdraw.html');
     }
     else{
@@ -197,13 +199,73 @@ app.post('/withdraw', function(req,res){
 
         mysqlConn.query(query, function(err, qResult){
             if(err) throw err;
-        
+
         });
 
        res.sendFile(__dirname + '/dashboard.html');
     }
 });
+app.post('/transferRedirect', function (req,res) {
+    res.sendFile(__dirname + '/transfer.html');
 
+});
+app.post('/transfer', function (req,res) {
+    console.log("in transfer")
+    let username = req.session.username;
+    let amountTransfer = req.body.transferAmount;
+    let transferAccount = req.body.accountName;
+
+    console.log(username);
+    if(amountTransfer < 0){
+        res.sendFile(__dirname + '/transfer.html');
+    }
+    else{
+        let query = "USE users; UPDATE appusers SET accountBalance = accountBalance - " + amountTransfer+ " WHERE username = '" + username + "';";
+        console.log(query);
+
+        let query2 ="USE users; UPDATE appusers SET accountBalance = accountBalance + " + amountTransfer+ " WHERE username = '" + transferAccount + "';";
+        console.log(query2);
+
+        let accountQuery = "USE users; SELECT username FROM appusers WHERE username='" + transferAccount + "'; ";
+        console.log(accountQuery);
+        mysqlConn.query(accountQuery, function(err, qResult){
+            if(err) throw err;
+
+            console.log("1. Check");
+            console.log(qResult[0]);
+            console.log(qResult[1]);
+
+            let match = false;
+            qResult[1].forEach(function (account) {
+                if (account['username'] == transferAccount){
+                    console.log("transferAccount exists");
+
+                    match = true;
+
+                }
+                else{
+                    console.log("transferAccount does not exist")
+                    res.send("<b>The account you want to transfer to does not exist</b>");
+                }
+
+
+
+            });
+        });
+        mysqlConn.query(query, function(err, qResult){
+            if(err) throw err;
+
+        });
+        mysqlConn.query(query2, function(err, qResult){
+            if(err) throw err;
+
+        });
+
+        res.sendFile(__dirname + '/dashboard.html');
+    }
+
+
+})
 app.post('/return', function(req,res){
     res.sendFile(__dirname + '/dashboard.html');
 });
