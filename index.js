@@ -85,7 +85,7 @@ app.post('/create', function(req, res){
     let username = req.body.username;
     let password = req.body.password;
     let address = req.body.address;
-    let  accountBalance = 0;
+    let accountBalance = 0;
 
     let query = "USE users; INSERT INTO appusers VALUES('" + firstname + "','" + lastname + "','" + username + "','" + password + "','" + address + "','" + accountBalance + "');";
     console.log(query);
@@ -94,14 +94,11 @@ app.post('/create', function(req, res){
         if(err) throw err;
     })
     res.sendFile(__dirname + '/index.html')
-});    
-
-
-app.get('/logout', function(req,res){
-    req.session.reset();
-    res.redirect('/');
 });
-
+function replaceAll(src, search, replacement) {
+    
+    return src.replace(new RegExp(search, 'g'), replacement);
+};
 
 app.post('/balance', function(req,res){
     //let username = req.body.username;
@@ -112,26 +109,62 @@ app.post('/balance', function(req,res){
     console.log(req.session.username);
 
     let username = req.session.username;
+    let accountBalance;
 
     console.log(username);
     let query = "USE users;SELECT accountBalance FROM appusers WHERE username= '" + username +"';";
     console.log("pay attention here");
-
-    let accountBalance = req.session.accountBalance;
-
-    console.log(accountBalance);
-
     console.log(query);
-    console.log(username);
     console.log(accountBalance);
-  
+    console.log(req.session.accountBalance);
     mysqlConn.query(query, function(err, qResult){
         if(err) throw err;
-    })
+        else{
+        console.log("1. Check");
+        console.log(qResult[1]);
+        qResult[1].forEach(function(account){
+            accountBalance = account['accountBalance'];
+            //console.log(accountBalance);
+            req.session.accountBalance = accountBalance;
+            let commentsData = "";
+
+            // Replace the newlines with HTML <br>
+            commentsData = replaceAll(commentsData, "\n", "<br>");
+            
+            let pageStr = "	<!DOCTYPE html>";
+            pageStr += "	<html>";
+            pageStr += "	<head>";
+            pageStr += "		<title>Balance </title>";
+            pageStr += "	</head>";
+            pageStr += "	<body bgcolor=white>";
+            pageStr += "	   <h1>Your current Balance: " + accountBalance + "</h1><br>";
+            pageStr += commentsData;
+            pageStr += "	    <form action='/return' method='post'>";
+            pageStr += "        	    <label for='comment'>Message:</label>"; 
+            pageStr += "        	    <input type='submit' value='Return' />";
+            pageStr += "	    </form>";
+            pageStr += "	</body>";
+            pageStr += "</html>	";
+                
+            // Send the page
+            res.send(pageStr);	
+        });
+        }
+        
+    });
+    console.log(req.session.accountBalance);
+    //res.sendFile(__dirname + '/dashboard.html')
+    //console.log(accountBalance);
     
-    console.log(accountBalance);
 
+});
+app.post('/return', function(req,res){
+    res.sendFile(__dirname + '/dashboard.html');
+});
 
+app.get('/logout', function(req,res){
+    req.session.reset();
+    res.redirect('/');
 });
 
 app.listen(3000);
