@@ -220,18 +220,22 @@ app.post('/transfer', function (req,res) {
         res.sendFile(__dirname + '/transfer.html');
     }
     else{
+        //subtracts form user account
         let query = "USE users; UPDATE appusers SET accountBalance = accountBalance - " + amountTransfer+ " WHERE username = '" + username + "';";
         console.log(query);
-
+        //adds to chosen account
         let query2 ="USE users; UPDATE appusers SET accountBalance = accountBalance + " + amountTransfer+ " WHERE username = '" + transferAccount + "';";
         console.log(query2);
-
+        // checks if the account exists
         let accountQuery = "USE users; SELECT username FROM appusers WHERE username='" + transferAccount + "'; ";
         console.log(accountQuery);
+
+        // checks if the account exists
         mysqlConn.query(accountQuery, function(err, qResult){
             if(err) throw err;
 
             console.log("1. Check");
+            
             console.log(qResult[0]);
             console.log(qResult[1]);
 
@@ -252,10 +256,12 @@ app.post('/transfer', function (req,res) {
 
             });
         });
+        //subtracts form user account
         mysqlConn.query(query, function(err, qResult){
             if(err) throw err;
 
         });
+        //adds to chosen account
         mysqlConn.query(query2, function(err, qResult){
             if(err) throw err;
 
