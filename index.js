@@ -158,6 +158,29 @@ app.post('/balance', function(req,res){
     
 
 });
+app.post('/depositRedirect', function(req,res){
+    res.sendFile(__dirname + '/deposit.html');
+});
+app.post('/deposit', function(req,res){
+    console.log("got to deposite");
+    let username = req.session.username;
+    console.log(username);
+    let amountAdd = req.body.deposit;
+    if (amountAdd < 0){
+        res.sendFile(__dirname + '/deposit.html');
+    }
+    else{
+        let query = "USE users; UPDATE appusers SET accountBalance = accountBalance + " + amountAdd + " WHERE username = '" + username + "';";
+
+        mysqlConn.query(query, function(err, qResult){
+            if(err) throw err;
+        
+        });
+
+       res.sendFile(__dirname + '/dashboard.html');
+    }
+});
+
 app.post('/return', function(req,res){
     res.sendFile(__dirname + '/dashboard.html');
 });
