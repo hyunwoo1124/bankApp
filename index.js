@@ -181,6 +181,29 @@ app.post('/deposit', function(req,res){
     }
 });
 
+app.post('/withdrawRedirect', function(req,res){
+    res.sendFile(__dirname + '/withdraw.html');
+});
+app.post('/withdraw', function(req,res){
+    console.log("got to withdraw");
+    let username = req.session.username;
+    console.log(username);
+    let amountSub = req.body.withdraw;
+    if (amountSub < 0){
+        res.sendFile(__dirname + '/withdraw.html');
+    }
+    else{
+        let query = "USE users; UPDATE appusers SET accountBalance = accountBalance - " + amountSub + " WHERE username = '" + username + "';";
+
+        mysqlConn.query(query, function(err, qResult){
+            if(err) throw err;
+        
+        });
+
+       res.sendFile(__dirname + '/dashboard.html');
+    }
+});
+
 app.post('/return', function(req,res){
     res.sendFile(__dirname + '/dashboard.html');
 });
