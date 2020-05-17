@@ -214,10 +214,16 @@ app.post('/transfer', function (req,res) {
     let username = req.session.username;
     let amountTransfer = req.body.transferAmount;
     let transferAccount = req.body.accountName;
+    let accountBalance = req.session.accountBalance;
 
     console.log(username);
-    if(amountTransfer < 0){
+    console.log(amountTransfer);
+    console.log(transferAccount);
+    if(amountTransfer < 0 || amountTransfer > accountBalance){
+        console.log("either put 0 or more than in account");
+
         res.sendFile(__dirname + '/transfer.html');
+        res.send("<p>That is not a valid amount</p>");
     }
     else{
         //subtracts form user account
@@ -235,17 +241,23 @@ app.post('/transfer', function (req,res) {
             if(err) throw err;
 
             console.log("1. Check");
-            
-            console.log(qResult[0]);
+
+
             console.log(qResult[1]);
 
             let match = false;
             qResult[1].forEach(function (account) {
-                if (account['username'] == transferAccount){
+                if (account['username'] == transferAccount) {
                     console.log("transferAccount exists");
 
                     match = true;
 
+                }
+            });
+
+
+                if(match){
+                    queryFunc();
                 }
                 else{
                     console.log("transferAccount does not exist")
@@ -254,24 +266,27 @@ app.post('/transfer', function (req,res) {
 
 
 
-            });
+
         });
         //subtracts form user account
-        mysqlConn.query(query, function(err, qResult){
-            if(err) throw err;
+        let queryFunc = function(){
+            mysqlConn.query(query, function(err, qResult){
+                if(err) throw err;
 
-        });
-        //adds to chosen account
-        mysqlConn.query(query2, function(err, qResult){
-            if(err) throw err;
+            });
+            //adds to chosen account
+            mysqlConn.query(query2, function(err, qResult){
+                if(err) throw err;
 
-        });
+            });
+        }
+
 
         res.sendFile(__dirname + '/dashboard.html');
     }
 
 
-})
+});
 app.post('/return', function(req,res){
     res.sendFile(__dirname + '/dashboard.html');
 });
