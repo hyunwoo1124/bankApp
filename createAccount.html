@@ -3,19 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Deposit</title>
+    <title>Create Account</title>
 </head>
 <body>
-    <h1>How much would you like to deposit?</h1>
-    <form action="/deposit" method="POST">
+    <h1>Which account do you want to create?</h1>
+    <form action="/createAccount" method="POST">
+        <label for="accountNum">Choose an account:</label>
         <select id="accountNum" name="accountNum">
             <option value="1">Account 1</option>
             <option value="2">Account 2</option>
             <option value="3">Account 3</option>
         </select>
-        <label for="deposit">Deposit Amount:</label>
-        <input type="number" id="deposit" name = "deposit">
-        <input type="submit" value="deposit">
+        <input type="submit">
     </form>
 </body>
 </html>
