@@ -97,11 +97,8 @@ app.post('/login', function(req,res){
 
     });
 });
-
-
-
 app.post('/create', function(req, res){
-    let firstname = xssFilers.inHTMLData(req.body.firstname);
+    let firstname = xssFilters.inHTMLData(req.body.firstname);
     let lastname = xssFilters.inHTMLData(req.body.lastname);
     let username = xssFilters.inHTMLData(req.body.username);
     let password = xssFilters.inHTMLData(req.body.password);
@@ -117,13 +114,15 @@ app.post('/create', function(req, res){
     [firstname,lastname,username,password,address,accountBalance1,accountBalance2,accountBalance3]
     */
 
-    mysqlConn.query('USE users; INSERT INTO appusers VALUES(`firstname` = ?, `lastname` = ?, `username` = ?, `password` = ?, `address` = ?, `accountBalance1` = ?, `accountBalance2` = ?, `accountBalance3`= ?)',
-    [firstname,lastname,username,password,address,accountBalance1,accountBalance2,accountBalance3],function(err, qResult){
+    // Protecting the sql query using prepared statements to prevent malicious attacker from injecting their own queries.
+    mysqlConn.query(query,function(err, qResult){
         console.log(qResult[1]);accountBalance1
         if(err) throw err;
     })
     res.sendFile(__dirname + '/index.html')
 });
+
+
 function replaceAll(src, search, replacement) {
 
     return src.replace(new RegExp(search, 'g'), replacement);
