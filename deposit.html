@@ -8,8 +8,13 @@
 <body>
     <h1>How much would you like to deposit?</h1>
     <form action="/deposit" method="POST">
+        <select id="accountNum" name="accountNum">
+            <option value="1">Account 1</option>
+            <option value="2">Account 2</option>
+            <option value="3">Account 3</option>
+        </select>
         <label for="deposit">Deposit Amount:</label>
-        <input type="number" id="deposit" name = "deposit">
+        <input type="number" id="deposit" name = "deposit" data-type="currency" placeholder="$0.00">
         <input type="submit" value="deposit">
     </form>
 </body>

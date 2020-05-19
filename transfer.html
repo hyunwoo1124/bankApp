@@ -8,11 +8,21 @@
 <body>
 <h1>How much would you like to transfer?</h1>
     <form action="/transfer" method="POST">
-        <label for="accountName">Where do you want to Transfer money:</label>
-        <input type="text" id="accountName" name = "accountName">
-        <br>
-        <label for="transferAmount">How much would you like to transfer</label>
-        <input type="number" id="transferAmount" name="transferAmount">
+        <label for="accountNum1">Transfer from: </label>
+        <select id="accountNum1" name="accountNum1">
+            <option value="1">Account 1</option>
+            <option value="2">Account 2</option>
+            <option value="3">Account 3</option>
+        </select>
+        <label for="accountNum2"> Transfer to: </label>
+        <select id="accountNum2" name="accountNum2">
+            <option value="1">Account 1</option>
+            <option value="2">Account 2</option>
+            <option value="3">Account 3</option>
+        </select>
+        <br><br>
+        <label for="transferAmount">How much would you like to transfer:</label>
+        <input type="number" id="transferAmount" name="transferAmount" data-type="currency" placeholder="$0.00">
         <input type="submit" value="transfer">
     </form>
 </body>
