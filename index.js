@@ -106,7 +106,7 @@ app.post('/create', function(req, res){
     let accountBalance1 = 0;
     let accountBalance2 = -5;
     let accountBalance3 = -5;
-
+    //added 
     let query = "USE users; INSERT INTO appusers VALUES('" + firstname + "','" + lastname + "','" + username + "','" + password + "','" + address + "','" + accountBalance1 + "','" + accountBalance2 + "','" + accountBalance3 + "');";
     console.log(query);
     /*
