@@ -4,6 +4,8 @@ const express = require('express');
 const sessions = require('client-sessions');
 const bodyParser = require('body-parser');
 const mysql = require('mysql');
+const xssFilters = require('xss-filters');
+
 const csp = require('helmet-csp');
 const app = express();
 
@@ -59,8 +61,8 @@ app.get('/index.html', function(req, res){
 });
 */
 app.post('/login', function(req,res){
-    let username = req.body.username;
-    let password = req.body.password;
+    let username = xssFilters.inHTMLData(req.body.username);
+    let password = xssFilters.inHTMLData(req.body.password);
 
     let query = "USE users; SELECT username, password from appusers where username='" + username + "' AND password='" + password + "'";
     console.log(query);
@@ -72,7 +74,8 @@ app.post('/login', function(req,res){
         console.log("1. Check");
         console.log(qResult[0]);
         console.log(qResult[1]);
-
+        console.log('xss filtered username ' + username);
+        console.log('xss filered password ' + password);
         let match = false;
         qResult[1].forEach(function(account){
             if(account['username'] == username && account['password'] == password){
@@ -98,11 +101,11 @@ app.post('/login', function(req,res){
 
 
 app.post('/create', function(req, res){
-    let firstname = req.body.firstname;
-    let lastname = req.body.lastname;
-    let username = req.body.username;
-    let password = req.body.password;
-    let address = req.body.address;
+    let firstname = xssFilers.inHTMLData(req.body.firstname);
+    let lastname = xssFilters.inHTMLData(req.body.lastname);
+    let username = xssFilters.inHTMLData(req.body.username);
+    let password = xssFilters.inHTMLData(req.body.password);
+    let address = xssFilters.inHTMLData(req.body.address);
     let accountBalance1 = 0;
     let accountBalance2 = -5;
     let accountBalance3 = -5;
@@ -137,7 +140,8 @@ app.post('/balance', function(req,res){
 
     console.log(username);
     let query = "USE users;SELECT accountBalance"+ accountNum +" FROM appusers WHERE username= '" + username +"';";
-    mysqlConn.query(query, function(err, qResult){
+    mysqlConn.query(query,
+     function(err, qResult){
         if(err) throw err;
         else{
             console.log("1. Check");
