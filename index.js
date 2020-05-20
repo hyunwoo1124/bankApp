@@ -133,8 +133,8 @@ app.post('/balanceRedirect', function(req,res){
 });
 
 app.post('/balance', function(req,res){
-    let username = req.session.username;
-    let accountNum = req.body.accountNum;
+    let username = xssFilters.inHTMLData(req.session.username);
+    let accountNum = xssFilters.inHTMLData(req.body.accountNum);
     let accountBalance = -5;
 
     console.log(username);
@@ -144,6 +144,7 @@ app.post('/balance', function(req,res){
         if(err) throw err;
         else{
             console.log("1. Check");
+            console.log(qResult[0]);
             console.log(qResult[1]);
             let thisAccount = "accountBalance" + accountNum;
             qResult[1].forEach(function(account){
@@ -192,19 +193,21 @@ app.post('/depositRedirect', function(req,res){
     res.sendFile(__dirname + '/deposit.html');
 });
 app.post('/deposit', function(req,res){
-    console.log("got to deposite");
-    let username = req.session.username;
-    console.log(username);
-    let amountAdd = req.body.deposit;
-    let accountNum = req.body.accountNum;
+    console.log("got to deposit");
+    let username = xssFilters.inHTMLData(req.session.username);
+    let amountAdd = xssFilters.inHTMLData(req.body.deposit);
+    let accountNum = xssFilters.inHTMLData(req.body.accountNum);
     let accountBalance = -5;
 
-    console.log(username);
+    console.log("xss filtered username " + username );
     let query1 = "USE users;SELECT accountBalance"+ accountNum +" FROM appusers WHERE username= '" + username +"';";
     mysqlConn.query(query1, function(err, qResult){
         if(err) throw err;
         else{
             let thisAccount = "accountBalance" + accountNum;
+            console.log("Deposit filter checks ");
+            console.log("xss filtered amountAdd: " + amountAdd);
+            console.log("xss filtered accountNum: " + accountNum);
             qResult[1].forEach(function(account){
                 accountBalance = account[thisAccount];
                 //console.log(accountBalance);
@@ -239,16 +242,20 @@ app.post('/withdrawRedirect', function(req,res){
 });
 app.post('/withdraw', function(req,res){
     console.log("got to withdraw");
-    let username = req.session.username;
-    console.log(username);
-    let amountSub = req.body.withdraw;
-    let accountNum = req.body.accountNum;
+    let username = xssFilters.inHTMLData(req.session.username);
+    let amountSub = xssFilters.inHTMLData(req.body.withdraw);
+    let accountNum = xssFilters.inHTMLData(req.body.accountNum);
     let accountBalance = -5;
 
     let query1 = "USE users;SELECT accountBalance"+ accountNum +" FROM appusers WHERE username= '" + username +"';";
     mysqlConn.query(query1, function(err, qResult){
         if(err) throw err;
         else{
+            console.log("xss filters for /withdraw");
+            console.log("xss filter username: " +username);
+            console.log("xss filter amountSub: " +amountSub);
+            console.log("xss filter accountNum: " +accountNum);
+
             let thisAccount = "accountBalance" + accountNum;
             qResult[1].forEach(function(account){
                 accountBalance = account[thisAccount];
@@ -285,8 +292,8 @@ app.post('/createAccountRedirect', function(req,res){
 });
 
 app.post('/createAccount', function(req,res){
-    let username = req.session.username;
-    let accountNum = req.body.accountNum;
+    let username = xssFilters.inHTMLData(req.session.username);
+    let accountNum = xssFilters.inHTMLData(req.body.accountNum);
     let accountBalance = -5;
     let accountSetZero = 0;
 
@@ -300,7 +307,10 @@ app.post('/createAccount', function(req,res){
             let thisAccount = "accountBalance" + accountNum;
             qResult[1].forEach(function(account){
                 accountBalance = account[thisAccount];
-                //console.log(accountBalance);
+                console.log("Check /createAccount");
+                console.log("xss Filtered username: " + username);
+                console.log("xss Filtered accountNum: " + accountNum);
+
                 if (accountBalance < 0){
                     console.log("got to exists");
                     let query2 = "USE users; UPDATE appusers SET accountBalance" + accountNum + " = " + accountSetZero + " WHERE username = '" + username + "';";
@@ -353,8 +363,8 @@ app.post('/deleteAccountRedirect', function(req,res){
 });
 
 app.post('/deleteAccount', function(req,res){
-    let username = req.session.username;
-    let accountNum = req.body.accountNum;
+    let username = xssFilters.inHTMLData(req.session.username);
+    let accountNum = xssFilters.inHTMLData(req.body.accountNum);
     let accountBalance = -5;
     let accountSetNeg = -5;
 
@@ -363,7 +373,9 @@ app.post('/deleteAccount', function(req,res){
     mysqlConn.query(query, function(err, qResult){
         if(err) throw err;
         else{
-            console.log("1. Check");
+            console.log("Check /deleteAccount");
+            console.log("xss filtered username " + username);
+            console.log("xss filtered accountNum " + accountNum)
             console.log(qResult[1]);
             let thisAccount = "accountBalance" + accountNum;
             qResult[1].forEach(function(account){
@@ -420,10 +432,10 @@ app.post('/transferRedirect', function(req,res){
     res.sendFile(__dirname + '/transfer.html');
 });
 app.post('/transfer', function(req,res){
-    let username = req.session.username;
-    let amountTransfer = req.body.transferAmount;
-    let transferAccount1 = req.body.accountNum1;
-    let transferAccount2 = req.body.accountNum2;
+    let username = xssFilters.inHTMLData(req.session.username);
+    let amountTransfer = xssFilters.inHTMLData(req.body.transferAmount);
+    let transferAccount1 = xssFilters.inHTMLData(req.body.accountNum1);
+    let transferAccount2 = xssFilters.inHTMLData(req.body.accountNum2);
     let accountBalance1 = -5;
     let accountBalance2 = -5;
 
@@ -450,6 +462,12 @@ app.post('/transfer', function(req,res){
         mysqlConn.query(query1, function(err, qResult1){
             if(err) throw err;
             else{
+                console.log("Check /transfer");
+                console.log("xss filtered username " + username);
+                console.log("xss filtered amountTransfer/trasnferAmount " + amountTransfer);
+                console.log("xss filtered transferAccount1/accountNum1 " +accountNum1);
+                console.log("xss filtered transferAccount2/accountNum2 " +accountNum2);
+
                 let thisAccount1 = "accountBalance" + transferAccount1;
                 qResult1[1].forEach(function(account){
                     accountBalance1 = account[thisAccount1];
@@ -467,6 +485,11 @@ app.post('/transfer', function(req,res){
                             mysqlConn.query(query2, function(err, qResult2){
                                 if(err) throw err;
                                 else{
+                                    console.log("Check /transfer");
+                                    console.log("xss filtered username " + username);
+                                    console.log("xss filtered amountTransfer/trasnferAmount " + amountTransfer);
+                                    console.log("xss filtered transferAccount1/accountNum1 " +accountNum1);
+                                    console.log("xss filtered transferAccount2/accountNum2 " +accountNum2);
                                     let thisAccount2 = "accountBalance" + transferAccount2;
                                     qResult2[1].forEach(function(account){
                                         accountBalance2 = account[thisAccount2];
@@ -506,7 +529,6 @@ app.post('/transfer', function(req,res){
         });
     }
 });
-
 
 app.post('/return', function(req,res){
     res.sendFile(__dirname + '/dashboard.html');
