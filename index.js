@@ -107,7 +107,11 @@ app.post('/create', function(req, res){
     let accountBalance2 = -5;
     let accountBalance3 = -5;
     //added 
-    if (password.length > 7){
+    console.log("110 check");
+    console.log(password.length);
+    if (password.length > 7)
+    {
+        console.log("113 password length check");
         if ((password.match(/[a-z]/) && (password.match(/[A-Z]/))))
         {
             console.log("uppercase & lowercase check");
@@ -129,11 +133,22 @@ app.post('/create', function(req, res){
                     })
                     res.sendFile(__dirname + '/index.html')
             }
+            else
+            {
+                console.log("Invalid password no symbols/digits");
+                res.sendFile(__dirname + '/wrongCredentials.html');
+            }
+        }
+        else
+        {
+            console.log("invalid password no upper/lowercase");
+            res.sendFile(__dirname + '/wrongCredentials.html');
         }
     }
-    else{
+    else
+    {
         console.log("INVALID PASSWORD");
-        res.sendFile(__dirname + '/index.html');
+        res.sendFile(__dirname + '/wrongCredentials.html');
     }
     /*
     'USE users; INSERT INTO appusers VALUES(`firstname` = ?, `lastname` = ?, `username` = ?, `password` = ?, `address` = ?, `accountBalance1` = ?, `accountBalance2` = ?, `accountBalance3`= ?)',
