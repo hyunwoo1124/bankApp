@@ -107,19 +107,46 @@ app.post('/create', function(req, res){
     let accountBalance2 = -5;
     let accountBalance3 = -5;
     //added 
-    let query = "USE users; INSERT INTO appusers VALUES('" + firstname + "','" + lastname + "','" + username + "','" + password + "','" + address + "','" + accountBalance1 + "','" + accountBalance2 + "','" + accountBalance3 + "');";
-    console.log(query);
+    if (password.length > 7){
+        if ((password.match(/[a-z]/) && (password.match(/[A-Z]/))))
+        {
+            console.log("uppercase & lowercase check");
+            if (password.match(/.[,!,@,#,$,%,^,&,*,?,_,~,-,(,)]/) && (password.match(/[0-9]/)))
+            {
+                console.log("symbol & number check");
+                let query = "USE users; INSERT INTO appusers VALUES('" + firstname + "','" + lastname + "','" + username + "','" + password + "','" + address + "','" + accountBalance1 + "','" + accountBalance2 + "','" + accountBalance3 + "');";
+                console.log(query);
+
+                    /*
+                    'USE users; INSERT INTO appusers VALUES(`firstname` = ?, `lastname` = ?, `username` = ?, `password` = ?, `address` = ?, `accountBalance1` = ?, `accountBalance2` = ?, `accountBalance3`= ?)',
+                    [firstname,lastname,username,password,address,accountBalance1,accountBalance2,accountBalance3]
+                    */
+
+                    // Protecting the sql query using prepared statements to prevent malicious attacker from injecting their own queries.
+                    mysqlConn.query(query,function(err, qResult){
+                        //console.log(qResult[1]);accountBalance1
+                        if(err) throw err;
+                    })
+                    res.sendFile(__dirname + '/index.html')
+            }
+        }
+    }
+    else{
+        console.log("INVALID PASSWORD");
+        res.sendFile(__dirname + '/index.html');
+    }
     /*
     'USE users; INSERT INTO appusers VALUES(`firstname` = ?, `lastname` = ?, `username` = ?, `password` = ?, `address` = ?, `accountBalance1` = ?, `accountBalance2` = ?, `accountBalance3`= ?)',
     [firstname,lastname,username,password,address,accountBalance1,accountBalance2,accountBalance3]
     */
 
     // Protecting the sql query using prepared statements to prevent malicious attacker from injecting their own queries.
-    mysqlConn.query(query,function(err, qResult){
+    /*mysqlConn.query(query,function(err, qResult){
         console.log(qResult[1]);accountBalance1
         if(err) throw err;
     })
     res.sendFile(__dirname + '/index.html')
+    */
 });
 
 
