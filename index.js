@@ -462,11 +462,6 @@ app.post('/transfer', function(req,res){
         mysqlConn.query(query1, function(err, qResult1){
             if(err) throw err;
             else{
-                console.log("Check /transfer");
-                console.log("xss filtered username " + username);
-                console.log("xss filtered amountTransfer/trasnferAmount " + amountTransfer);
-                console.log("xss filtered transferAccount1/accountNum1 " +accountNum1);
-                console.log("xss filtered transferAccount2/accountNum2 " +accountNum2);
 
                 let thisAccount1 = "accountBalance" + transferAccount1;
                 qResult1[1].forEach(function(account){
@@ -485,11 +480,7 @@ app.post('/transfer', function(req,res){
                             mysqlConn.query(query2, function(err, qResult2){
                                 if(err) throw err;
                                 else{
-                                    console.log("Check /transfer");
-                                    console.log("xss filtered username " + username);
-                                    console.log("xss filtered amountTransfer/trasnferAmount " + amountTransfer);
-                                    console.log("xss filtered transferAccount1/accountNum1 " +accountNum1);
-                                    console.log("xss filtered transferAccount2/accountNum2 " +accountNum2);
+                                    
                                     let thisAccount2 = "accountBalance" + transferAccount2;
                                     qResult2[1].forEach(function(account){
                                         accountBalance2 = account[thisAccount2];
