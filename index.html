@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secured Bank Corp.</title>
+</head>
+<body bgcolor="white">
+    <title>Secured Bank Corp.</title>
+    <div>
+        <h1>Welcome to the most secured bank in the world!</h1>
+    </div>
+    
+    <div>
+        <form action="/login" method = "POST">
+        <label for="username">Username:</label>
+        <br>
+        <input type="text" id="username" name="username">
+        <br>
+        <label for="pass">Password (8 characters minimum):</label>
+        <br>
+        <input type="password" id="pass" name="password"
+               minlength="8" required><br>
+        <input type="submit" value="Sign in">
+        <br>
+        <br>
+
+       </form>
+    <br>
+    <br>
+    </div>
+    <div>
+        <form action="/create" method = "POST">
+        <label for="firstname">First Name</label>
+        <br>
+        <input type="text" id='firstname' name='firstname'>
+        <br>
+
+        <label for='lastname'>Last Name</label>
+        <br>
+
+        <input type='text' id ='lastname' name = 'lastname'>
+        <br>
+
+        <lable for='username'>Username</lable>
+        <br>
+
+        <input type='text' id ='username' name ='username'>
+        <br>
+
+        <label for="pass">Password (8 character minimum)</label>
+        <br>
+
+        <input type='password' id ='password' name = 'password' pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&].{8,}" title="Must contain at least one number and one uppercase and lowercase letter, a special character (!,@,#,$, etc), and at least 8 or more characters" required required>
+        <br>
+
+        <label for="passwordCheck">Confirm Password</label>
+        
+        <br>
+
+        <input type='password' id ='passwordCheck' name = 'passwordCheck' pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&].{8,}" title="Type in the same password as above" required>
+        
+        <br>
+
+        <lable for='address'>Address</lable>
+        <br>
+
+        <input type='text' id ='address' name ='address'>
+        <br>
+        <input type="submit" value = "Create Account">
+
+        </form>
+
+
+        
+    </div>
+    <div>
+        <h3>Password must contain the following:</h3>
+        <p>A <b>lowercase</b> letter</p>
+        <p>A <b>capital (uppercase)</b> letter</p>
+        <p>A <b>number</b></p>
+        <p>A <b>special character</b></p>
+        <p>Minimum <b>8 characters</b></p>
+    </div>
+    </body>
+    
+</html>
+

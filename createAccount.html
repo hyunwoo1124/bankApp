@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account</title>
+</head>
+<body>
+    <h1>Which account do you want to create?</h1>
+    <form action="/createAccount" method="POST">
+        <label for="accountNum">Choose an account:</label>
+        <select id="accountNum" name="accountNum">
+            <option value="1">Account 1</option>
+            <option value="2">Account 2</option>
+            <option value="3">Account 3</option>
+        </select>
+        <input type="submit">
+    </form>
+    <form action='/return' method='POST'>
+        <label for='comment'>Return to dashboard:</label> 
+        <input type='submit' value='Return' />
+    </form>
+</body>
+</html>
