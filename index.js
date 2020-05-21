@@ -24,21 +24,14 @@ app.use(csp({
     directives: {
       defaultSrc: ["'self'", ],
       scriptSrc: ["'self'"],
-      //styleSrc: ['style.com'],
-      //fontSrc: ["'self'", 'fonts.com'],
       imgSrc: ["'self'"],
-      //sandbox: ['allow-forms', 'allow-scripts'],
-      //reportUri: '/report-violation',
-      //objectSrc: ["'none'"],
-      //upgradeInsecureRequests: true,
-      //workerSrc: false  // This is not set.
     }}))
 
 app.use(sessions({
     cookieName: 'session',
     secret: 'random_string_goes_here',
-    duration: 30 * 60 * 1000,
-    activeDuration: 5 * 60 * 1000,
+    duration: 3 * 60 * 1000,
+    activeDuration: 3 * 60 * 1000,
 }));
 
 app.get("/", function(req, res){
@@ -46,36 +39,21 @@ app.get("/", function(req, res){
         res.sendFile(__dirname + '/index.html');
     }
     else{
-        res.sendFile(__dirname + '/index.html')
+        res.sendFile(__dirname + '/index.html');
     }
 });
-/*
-app.get('/index.html', function(req, res){
-    if(req.session.username){
-        //res.render('dashboard', {username: req.session.username});
-        console("Your name: " + req.session.username);
-    }
-    else{
-        res.redirect('/');
-    }
-});
-*/
 app.post('/login', function(req,res){
     let username = xssFilters.inHTMLData(req.body.username);
     let password = xssFilters.inHTMLData(req.body.password);
 
     let query = "USE users; SELECT username, password from appusers where username='" + username + "' AND password='" + password + "'";
-    console.log(query);
 
     mysqlConn.query('USE users; SELECT username,password from appusers where `username` = ? AND `password` = ?',[username,password],
      function(err,qResult){
 
         if(err) throw err;
-        console.log("1. Check");
-        console.log(qResult[0]);
-        console.log(qResult[1]);
+        
         console.log('xss filtered username ' + username);
-        console.log('xss filered password ' + password);
         let match = false;
         qResult[1].forEach(function(account){
             if(account['username'] == username && account['password'] == password){
@@ -87,8 +65,6 @@ app.post('/login', function(req,res){
 
         if(match){
             req.session.username = username;
-            console.log(username);
-            //res.redirect('/dashboard');
             res.sendFile(__dirname + '/dashboard.html');
         }
         else{
@@ -107,8 +83,7 @@ app.post('/create', function(req, res){
     let accountBalance1 = 0;
     let accountBalance2 = -5;
     let accountBalance3 = -5;
-    //added 
-    console.log("110 check");
+   
     console.log(password.length);
     if (password != passwordCheck){
         res.sendFile(__dirname + '/index.html');
@@ -116,7 +91,7 @@ app.post('/create', function(req, res){
     else {
         if (password.length > 7)
         {
-            console.log("113 password length check");
+            console.log("password length check");
             if ((password.match(/[a-z]/) && (password.match(/[A-Z]/))))
             {
                 console.log("uppercase & lowercase check");
@@ -130,10 +105,9 @@ app.post('/create', function(req, res){
                         'USE users; INSERT INTO appusers VALUES(`firstname` = ?, `lastname` = ?, `username` = ?, `password` = ?, `address` = ?, `accountBalance1` = ?, `accountBalance2` = ?, `accountBalance3`= ?)',
                         [firstname,lastname,username,password,address,accountBalance1,accountBalance2,accountBalance3]
                         */
-
+                        // Inconsistent performances, removed due to random crash.
                         // Protecting the sql query using prepared statements to prevent malicious attacker from injecting their own queries.
                         mysqlConn.query(query,function(err, qResult){
-                            //console.log(qResult[1]);accountBalance1
                             if(err) throw err;
                         })
                         res.sendFile(__dirname + '/index.html');
@@ -156,25 +130,8 @@ app.post('/create', function(req, res){
             res.sendFile(__dirname + '/wrongCredentials.html');
         }
     }
-    /*
-    'USE users; INSERT INTO appusers VALUES(`firstname` = ?, `lastname` = ?, `username` = ?, `password` = ?, `address` = ?, `accountBalance1` = ?, `accountBalance2` = ?, `accountBalance3`= ?)',
-    [firstname,lastname,username,password,address,accountBalance1,accountBalance2,accountBalance3]
-    */
-
-    // Protecting the sql query using prepared statements to prevent malicious attacker from injecting their own queries.
-    /*mysqlConn.query(query,function(err, qResult){
-        console.log(qResult[1]);accountBalance1
-        if(err) throw err;
-    })
-    res.sendFile(__dirname + '/index.html')
-    */
+    
 });
-
-
-function replaceAll(src, search, replacement) {
-
-    return src.replace(new RegExp(search, 'g'), replacement);
-};
 
 app.post('/balanceRedirect', function(req,res){
     res.sendFile(__dirname + '/balance.html');
@@ -191,23 +148,17 @@ app.post('/balance', function(req,res){
      function(err, qResult){
         if(err) throw err;
         else{
-            console.log("1. Check");
-            console.log(qResult[0]);
-            console.log(qResult[1]);
+        
             let thisAccount = "accountBalance" + accountNum;
             qResult[1].forEach(function(account){
                 accountBalance = account[thisAccount];
-                //console.log(accountBalance);
                 if (accountBalance < 0){
-                    console.log("got to accountNotReal");
 
                     res.sendFile(__dirname + '/noAccount.html');
                 }
                 else{
-                    let commentsData = "";
 
                     // Replace the newlines with HTML <br>
-                    commentsData = replaceAll(commentsData, "\n", "<br>");
 
                     let pageStr = "	<!DOCTYPE html>";
                     pageStr += "	<html>";
@@ -216,7 +167,6 @@ app.post('/balance', function(req,res){
                     pageStr += "	</head>";
                     pageStr += "	<body bgcolor=white>";
                     pageStr += "	   <h1>Your current Balance in account " + accountNum + ": " + accountBalance + "</h1><br>";
-                    pageStr += commentsData;
                     pageStr += "	    <form action='/return' method='post'>";
                     pageStr += "        	    <label for='comment'>Message:</label>";
                     pageStr += "        	    <input type='submit' value='Return' />";
@@ -232,8 +182,7 @@ app.post('/balance', function(req,res){
 
     });
     console.log(req.session.accountBalance);
-    //res.sendFile(__dirname + '/dashboard.html')
-    //console.log(accountBalance);
+    
 
 
 });
@@ -253,12 +202,9 @@ app.post('/deposit', function(req,res){
         if(err) throw err;
         else{
             let thisAccount = "accountBalance" + accountNum;
-            console.log("Deposit filter checks ");
-            console.log("xss filtered amountAdd: " + amountAdd);
-            console.log("xss filtered accountNum: " + accountNum);
+
             qResult[1].forEach(function(account){
                 accountBalance = account[thisAccount];
-                //console.log(accountBalance);
                 if (accountBalance < 0){
                     console.log("got to accountNotReal");
 
@@ -307,7 +253,6 @@ app.post('/withdraw', function(req,res){
             let thisAccount = "accountBalance" + accountNum;
             qResult[1].forEach(function(account){
                 accountBalance = account[thisAccount];
-                //console.log(accountBalance);
                 if (accountBalance < 0){
                     console.log("got to accountNotReal");
 
@@ -350,17 +295,13 @@ app.post('/createAccount', function(req,res){
     mysqlConn.query(query, function(err, qResult){
         if(err) throw err;
         else{
-            console.log("1. Check");
-            console.log(qResult[1]);
             let thisAccount = "accountBalance" + accountNum;
             qResult[1].forEach(function(account){
                 accountBalance = account[thisAccount];
-                console.log("Check /createAccount");
                 console.log("xss Filtered username: " + username);
                 console.log("xss Filtered accountNum: " + accountNum);
 
                 if (accountBalance < 0){
-                    console.log("got to exists");
                     let query2 = "USE users; UPDATE appusers SET accountBalance" + accountNum + " = " + accountSetZero + " WHERE username = '" + username + "';";
                     mysqlConn.query(query2, function(err, qResult){
                         if(err) throw err;
@@ -428,7 +369,6 @@ app.post('/deleteAccount', function(req,res){
             let thisAccount = "accountBalance" + accountNum;
             qResult[1].forEach(function(account){
                 accountBalance = account[thisAccount];
-                //console.log(accountBalance);
                 if (accountBalance >= 0){
                     console.log("got to exists");
                     let query2 = "USE users; UPDATE appusers SET accountBalance" + accountNum + " = " + accountSetNeg + " WHERE username = '" + username + "';";
@@ -514,7 +454,6 @@ app.post('/transfer', function(req,res){
                 let thisAccount1 = "accountBalance" + transferAccount1;
                 qResult1[1].forEach(function(account){
                     accountBalance1 = account[thisAccount1];
-                    //console.log(accountBalance);
                     if (accountBalance1 < 0){
                         console.log("got to accountNotReal");
                         res.sendFile(__dirname + '/noAccount.html');
@@ -532,7 +471,6 @@ app.post('/transfer', function(req,res){
                                     let thisAccount2 = "accountBalance" + transferAccount2;
                                     qResult2[1].forEach(function(account){
                                         accountBalance2 = account[thisAccount2];
-                                        //console.log(accountBalance);
                                         if (accountBalance2 < 0){
                                             console.log("got to accountNotReal");
 
